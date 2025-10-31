@@ -9,6 +9,8 @@ public class BenchmarkRunner {
     public static void main(String[] args) throws RunnerException {
         Options options = new OptionsBuilder()
                 .include(HashMapBenchmark.class.getSimpleName())
+                // TODO: Add MapComparisonBenchmark to runner
+                // .include(MapComparisonBenchmark.class.getSimpleName())
                 .forks(1)
                 .build();
 

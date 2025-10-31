@@ -40,8 +40,8 @@ kollisionssandsynligheden lav, hvilket giver bedre performance for både inserti
 
 ### Variable parametre
 
-- Insertion count: 100, 1.000, 10.000, 100.000 entries
-- Key length: 8, 32, 128 tegn
+- Insertion count: 1.000, 10.000 entries (fokus på størrelser hvor optimisering har betydning)
+- Key length: 32 tegn (realistisk størrelse)
 - Value length: Fast på 16 tegn
 
 ### Benchmark-metoder
@@ -51,13 +51,11 @@ kollisionssandsynligheden lav, hvilket giver bedre performance for både inserti
 
 ## Forventede resultater
 
-### Små data-sæt (100-1000 entries)
-- 
-- Minimal forskel mellem capacity-strategier
-- HashMap resizing overhead er ubetydelig
-- Mikro-optimisering har ikke betydning
+### Medium data-sæt (1.000 entries)
+- Lille men målbar forskel mellem capacity-strategier
+- HashMap resizing overhead begynder at være synlig
 
-### Store data-sæt (10.000+ entries)
+### Store data-sæt (10.000 entries)
 
 - Klar performance-forskel mellem strategier
 - EXACT capacity bør være hurtigst
@@ -70,8 +68,18 @@ kollisionssandsynligheden lav, hvilket giver bedre performance for både inserti
 - Real-world relevans: Hvis du kender den forventede størrelse, er initial capacity en simpel optimisering
 - Måle-metode: JMH håndterer JVM warmup, GC-effekter og statistisk analyse
 
-## Out of scope
+## Extension muligheder
+
+### HashMap vs TreeMap sammenligning
+Projektet indeholder også `MapComparisonBenchmark.java` som er et skelet til at sammenligne HashMap og TreeMap performance:
+
+- TODO: Implementer benchmark-metoder for insertion, lookup og sorted iteration
+- TODO: Sammenlign O(1) HashMap performance med O(log n) TreeMap performance
+- TODO: Demonstrer TreeMaps fordel ved sorted key iteration
+- TODO: Diskuter trade-offs mellem performance og funktionalitet
+
+### Out of scope
 
 1. Memory usage: Vi benchmarker ikke hukommelsesforbrug med `-prof gc` for at se allocation-mønstre
-3. String collision analyse: Vi prøver ikke bevidst at skabe flere kollisioner med keys der hasher til det samme
-4. Concurrent access: Vi prøver ikke smartere implementeringer af HashMaps såsom ConcurrentHashMap
+2. String collision analyse: Vi prøver ikke bevidst at skabe flere kollisioner med keys der hasher til det samme
+3. Concurrent access: Vi prøver ikke smartere implementeringer af HashMaps såsom ConcurrentHashMap

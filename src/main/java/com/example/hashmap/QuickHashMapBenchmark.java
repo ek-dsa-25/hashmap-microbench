@@ -9,12 +9,12 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @State(Scope.Benchmark)
-@Warmup(iterations = 2, time = 500, timeUnit = TimeUnit.MILLISECONDS)
-@Measurement(iterations = 3, time = 500, timeUnit = TimeUnit.MILLISECONDS)
+@Warmup(iterations = 1, time = 200, timeUnit = TimeUnit.MILLISECONDS)
+@Measurement(iterations = 2, time = 200, timeUnit = TimeUnit.MILLISECONDS)
 @Fork(1)
-public class HashMapBenchmark {
+public class QuickHashMapBenchmark {
 
-    @Param({"1000", "10000"})
+    @Param({"1000"})
     private int insertionCount;
 
     @Param({"32"})
@@ -23,7 +23,7 @@ public class HashMapBenchmark {
     @Param({"16"})
     private int valueLength;
 
-    @Param({"DEFAULT", "EXACT", "UNDERSIZED", "OVERSIZED"})
+    @Param({"DEFAULT", "EXACT"})
     private String capacityStrategy;
 
     private String[] keys;
@@ -47,29 +47,10 @@ public class HashMapBenchmark {
         bh.consume(map);
     }
 
-    @Benchmark
-    public void benchmarkInsertionAndLookup(Blackhole bh) {
-        HashMap<String, String> map = createHashMap();
-
-        for (int i = 0; i < insertionCount; i++) {
-            map.put(keys[i], values[i]);
-        }
-
-        String result = null;
-        for (int i = 0; i < insertionCount; i++) {
-            result = map.get(keys[i]);
-        }
-
-        bh.consume(map);
-        bh.consume(result);
-    }
-
     private HashMap<String, String> createHashMap() {
         return switch (capacityStrategy) {
             case "DEFAULT" -> new HashMap<>();
             case "EXACT" -> new HashMap<>(insertionCount);
-            case "UNDERSIZED" -> new HashMap<>(Math.max(1, insertionCount / 4));
-            case "OVERSIZED" -> new HashMap<>(insertionCount * 2);
             default -> throw new IllegalArgumentException("Unknown capacity strategy: " + capacityStrategy);
         };
     }
